@@ -11,10 +11,10 @@ function UserForm() {
 
   const handleSubmit = async () => {
     if (isUpdate) {
-      await axios.put(`http://localhost:5000/api/users/${form.id}`, form);
+      await axios.put(`mastech-hgfgajcuc6ftb9fn.canadacentral-01.azurewebsites.net/api/users/${form.id}`, form);
       alert("User updated!");
     } else {
-      await axios.post("http://localhost:5000/api/users", form);
+      await axios.post("mastech-hgfgajcuc6ftb9fn.canadacentral-01.azurewebsites.net/api/users", form);
       alert("User added!");
     }
     setForm({ name: "", email: "", age: "", id: "" });
