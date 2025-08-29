@@ -4,7 +4,7 @@ import axios from "axios";
 function UserForm() {
   const [form, setForm] = useState({ name: "", email: "", age: "", id: "" });
   const [isUpdate, setIsUpdate] = useState(false);
-
+  
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   }; 
