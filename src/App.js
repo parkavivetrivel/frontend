@@ -1,25 +1,72 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import axios from "axios";
 
-function App() {
+function UserForm() {
+  const [form, setForm] = useState({ name: "", email: "", age: "", id: "" });
+  const [isUpdate, setIsUpdate] = useState(false);
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async () => {
+    if (isUpdate) {
+      await axios.put(`http://localhost:5000/api/users/${form.id}`, form);
+      alert("User updated!");
+    } else {
+      await axios.post("http://localhost:5000/api/users", form);
+      alert("User added!");
+    }
+    setForm({ name: "", email: "", age: "", id: "" });
+    setIsUpdate(false);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div style={{ margin: "20px" }}>
+      <h2>{isUpdate ? "Update User" : "Add User"}</h2>
+      {isUpdate && (
+        <input
+          type="text"
+          name="id"
+          placeholder="User ID"
+          value={form.id}
+          onChange={handleChange}
+        />
+      )}
+      <br />
+      <input
+        type="text"
+        name="name"
+        placeholder="Name"
+        value={form.name}
+        onChange={handleChange}
+      />
+      <br />
+      <input
+        type="text"
+        name="email"
+        placeholder="Email"
+        value={form.email}
+        onChange={handleChange}
+      />
+      <br />
+      <input
+        type="number"
+        name="age"
+        placeholder="Age"
+        value={form.age}
+        onChange={handleChange}
+      />
+      <br />
+      <button onClick={handleSubmit}>
+        {isUpdate ? "Update User" : "Add User"}
+      </button>
+      <br />
+      <button onClick={() => setIsUpdate(!isUpdate)}>
+        Switch to {isUpdate ? "Add" : "Update"}
+      </button>
     </div>
   );
 }
 
-export default App;
+export default UserForm;
