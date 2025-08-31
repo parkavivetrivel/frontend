@@ -14,7 +14,7 @@ function UserForm() {
       await axios.put(`https://server-h8epcuame2h8cwa6.canadacentral-01.azurewebsites.net/api/users/${form.id}`, form);
       alert("User updated!");
     } else {
-      await axios.post("hhttps://server-h8epcuame2h8cwa6.canadacentral-01.azurewebsites.net/api/users", form);
+      await axios.post("https://server-h8epcuame2h8cwa6.canadacentral-01.azurewebsites.net/api/users", form);
       alert("User added!");
     }
     setForm({ name: "", email: "", age: "", id: "" });
