@@ -8,9 +8,12 @@ function App() {
 
   // ================= Image Upload State =================
   const [file, setFile] = useState(null);
+  const [uploading, setUploading] = useState(false);
+  const [uploadedUrl, setUploadedUrl] = useState("");
 
-  // Replace this with your container SAS URL (original-files)
-  const containerSasUrl = "https://resizest.blob.core.windows.net/original-files?sp=rw&st=2025-09-01T10:31:52Z&se=2025-09-01T18:46:52Z&spr=https&sv=2024-11-04&sr=c&sig=XqP8yZnfoBZaF8PHAkMjf%2FSJ0y3%2BU3gwQHoGmrFcP7A%3D";
+  // 👉 Replace this with your container SAS URL
+  const containerSasUrl =
+    "https://resizest.blob.core.windows.net/original-files?sp=rw&st=2025-09-01T10:31:52Z&se=2025-09-01T18:46:52Z&spr=https&sv=2024-11-04&sr=c&sig=XqP8yZnfoBZaF8PHAkMjf%2FSJ0y3%2BU3gwQHoGmrFcP7A%3D";
 
   // ================= User Form Handlers =================
   const handleChange = (e) => {
@@ -46,11 +49,17 @@ function App() {
   };
 
   const handleUpload = async () => {
-    if (!file) return alert("Please select a file");
+    if (!file) return alert("Please select a file first!");
 
+    setUploading(true);
     try {
-      const uploadUrl = `${containerSasUrl}&${Date.now()}-${file.name}`;
+      // Build blob URL
+      const blobBaseUrl = containerSasUrl.split("?")[0]; // base URL without SAS
+      const sasToken = containerSasUrl.split("?")[1]; // SAS token only
+      const uniqueFileName = `${Date.now()}-${file.name}`;
+      const uploadUrl = `${blobBaseUrl}/${uniqueFileName}?${sasToken}`;
 
+      // Upload file directly
       await axios.put(uploadUrl, file, {
         headers: {
           "x-ms-blob-type": "BlockBlob",
@@ -58,11 +67,13 @@ function App() {
         },
       });
 
+      setUploadedUrl(`${blobBaseUrl}/${uniqueFileName}`);
       alert("Upload successful!");
     } catch (err) {
       console.error("Upload error:", err);
-      alert("Upload failed");
+      alert("Upload failed!");
     }
+    setUploading(false);
   };
 
   // ================= Render =================
@@ -117,7 +128,24 @@ function App() {
       {/* Image Upload */}
       <h2>Upload Image to Azure Blob Storage</h2>
       <input type="file" onChange={handleFileChange} />
-      <button onClick={handleUpload}>Upload</button>
+      <button onClick={handleUpload} disabled={uploading}>
+        {uploading ? "Uploading..." : "Upload"}
+      </button>
+
+      {uploadedUrl && (
+        <div style={{ marginTop: "20px" }}>
+          <p>Uploaded Image:</p>
+          <a href={uploadedUrl} target="_blank" rel="noopener noreferrer">
+            {uploadedUrl}
+          </a>
+          <br />
+          <img
+            src={uploadedUrl}
+            alt="Uploaded"
+            style={{ marginTop: "10px", width: "250px", borderRadius: "8px" }}
+          />
+        </div>
+      )}
     </div>
   );
 }
