@@ -17,7 +17,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          ref:  934fbb4 
+          ref: 934fbb4aaf661af4af148a9f37b129ebd6190c33
           submodules: true
           lfs: false
       - name: Build And Deploy
@@ -45,4 +45,5 @@ jobs:
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_KIND_SAND_052DAEF0F }}
           action: "close"
+
 
